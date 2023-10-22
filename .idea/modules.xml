@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/EzeeCart/EzeeCart.iml" filepath="$PROJECT_DIR$/EzeeCart/EzeeCart.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/EzeeCart-Backend.iml" filepath="$PROJECT_DIR$/.idea/EzeeCart-Backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/EzeeCart/auth-service/auth-service.iml" filepath="$PROJECT_DIR$/EzeeCart/auth-service/auth-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/EzeeCart/delivery-service/delivery-service.iml" filepath="$PROJECT_DIR$/EzeeCart/delivery-service/delivery-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/EzeeCart/inventory-service/inventory-service.iml" filepath="$PROJECT_DIR$/EzeeCart/inventory-service/inventory-service.iml" />
+    </modules>
+  </component>
+</project>

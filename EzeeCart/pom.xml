@@ -16,7 +16,7 @@
 	<description>Demo project for Spring Boot</description>
     <modules>
         <module>auth-service</module>
-        <module>product-service</module>
+        <module>order-service</module>
         <module>inventory-service</module>
         <module>delivery-service</module>
     </modules>
