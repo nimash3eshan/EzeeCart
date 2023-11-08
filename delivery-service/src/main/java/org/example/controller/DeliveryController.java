@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/deliveries")
+@RequestMapping("/api/deliveries")
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
@@ -24,8 +24,8 @@ public class DeliveryController {
         return deliveryService.getAllDeliveries();
     }
 
-    @GetMapping("/{deliveryId}")
-    public Optional<Delivery> getDeliveryById(@PathVariable Long deliveryId) {
+    @GetMapping("/")
+    public Optional<Delivery> getDeliveryById(@RequestParam(name = "deliveryId") Long deliveryId) {
         return deliveryService.getDeliveryById(deliveryId);
     }
 
@@ -34,15 +34,16 @@ public class DeliveryController {
         return deliveryService.createDelivery(delivery);
     }
 
-    @PutMapping("/{deliveryId}")
-    public Delivery updateDelivery(@PathVariable Long deliveryId, @RequestBody Delivery newDelivery) {
+    @PutMapping
+    public Delivery updateDelivery(@RequestParam(name = "deliveryId") Long deliveryId, @RequestBody Delivery newDelivery) {
         // Ensure the IDs match for updating
         newDelivery.setDeliveryId(deliveryId);
         return deliveryService.updateDelivery(newDelivery);
     }
 
-    @DeleteMapping("/{deliveryId}")
-    public void deleteDelivery(@PathVariable Long deliveryId) {
+
+    @DeleteMapping
+    public void deleteDelivery(@RequestParam(name = "deliveryId") Long deliveryId) {
         deliveryService.deleteDelivery(deliveryId);
     }
 
