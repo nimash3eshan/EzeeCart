@@ -8,7 +8,6 @@ import org.example.repository.InventoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -77,6 +76,14 @@ public class InventoryService {
         inventoryRepository.delete(existingProduct);
         return "Product deleted successfully";
     }
+
+    @Transactional
+    public void deleteProductById(Long productId) {
+        log.info("Deleting product with ID: {}", productId);
+        inventoryRepository.deleteByProductID(productId);
+        log.info("Product with ID {} deleted successfully", productId);
+    }
+
 
     public List<ProductResponseDTO> getAllProducts() {
         List<Inventory> products = inventoryRepository.findAll();
