@@ -16,6 +16,13 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     public String placeOrder(@RequestBody OrderRequest orderRequest){
         orderService.placeOrder(orderRequest);
-        return"order placed successfully";
+        return "order placed successfully";
+    }
+
+    @DeleteMapping("/{orderId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public String deleteOrder(@PathVariable Long orderId){
+        orderService.deleteOrder(orderId);
+        return "order deleted successfully";
     }
 }
