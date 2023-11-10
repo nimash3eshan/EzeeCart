@@ -27,41 +27,52 @@ public class OrderService {
     private final OrderRepository orderRepository;//inject the orderLineItems to repo
     private final WebClient webClient;
 
-    public void placeOrder(OrderRequest orderRequest){
-        Order order=new Order();
+    public void placeOrder(OrderRequest orderRequest) {
+        Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
 
-
-        List<OrderLineItems> orderLineItems=orderRequest.getOrderLineItemsDtoList()
+        List<OrderLineItems> orderLineItems = orderRequest.getOrderLineItemsDtoList()
                 .stream()
-                .map(this ::mapToDto)
+                .map(this::mapToDto)
                 .toList();
 
         order.setOrderLineItemsList(orderLineItems);
 
-        //todo: call inventory service and place order
+        // Flag to track if all products are validated successfully
+        boolean allProductsValidated = true;
 
         // List to store the results of inventory deductions
         List<String> results = new ArrayList<>();
 
-        // For each order line item, call the inventory service to deduct the quantity
+        // For each order line item, call the inventory service to validate and deduct the quantity
         for (OrderLineItems orderLineItem : orderLineItems) {
-            validateProduct(orderLineItem.getSkuCode(), orderLineItem.getQuantity());
-            String result = deductInventoryQuantity(orderLineItem.getSkuCode(), orderLineItem.getQuantity());
-            results.add(result);
+            boolean validationSuccessful = validateProduct(orderLineItem.getSkuCode(), orderLineItem.getQuantity());
+
+            // If validation fails for any product, set the flag to false
+            if (!validationSuccessful) {
+                allProductsValidated = false;
+                break; // No need to continue processing if validation fails for one product
+            }
         }
 
-        // If any of the results is not "Quantity deducted successfully," throw an exception
-        List<String> failedProducts = results.stream()
-                .filter(result -> !result.equals("Quantity deducted successfully.")).toList();
+        // If all products are validated successfully, proceed with deduction
+        if (allProductsValidated) {
+            for (OrderLineItems orderLineItem : orderLineItems) {
+                String result = deductInventoryQuantity(orderLineItem.getSkuCode(), orderLineItem.getQuantity());
+                results.add(result);
+            }
 
-        if (!failedProducts.isEmpty()) {
-            throw new IllegalArgumentException("Failed to deduct quantity for the following products: " + failedProducts);
+            // If any of the results is not "Quantity deducted successfully," throw an exception
+            List<String> failedProducts = results.stream()
+                    .filter(result -> !result.equals("Quantity deducted successfully.")).toList();
+
+            if (!failedProducts.isEmpty()) {
+                throw new IllegalArgumentException("Failed to deduct quantity for the following products: " + failedProducts);
+            }
+
+            // If all the results are "Quantity deducted successfully," save the order
+            orderRepository.save(order);
         }
-
-        // If all the results are "Quantity deducted successfully," save the order
-        orderRepository.save(order);
-
     }
 
     private String deductInventoryQuantity(Long skuCode, int quantity) {
@@ -91,29 +102,38 @@ public class OrderService {
         }
     }
 
-    private void validateProduct(Long skuCode, int quantity) {
+    private boolean validateProduct(Long skuCode, int quantity) {
         try {
             webClient.post()
                     .uri("http://localhost:8082/api/inventory/validate?productid=" + skuCode + "&quantityToDeduct=" + quantity)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
+
+            // If no exception is thrown, validation is successful
+            return true;
         } catch (Exception exception) {
-            if (exception instanceof WebClientResponseException responseException) {
+            // Handle exceptions and throw appropriate custom exceptions
+            // (ProductNotFoundException, InsufficientStockException, etc.)
+            handleValidationException(skuCode, exception);
 
-                // Handle 404 response (Not Found) and throw a custom exception
-                if (responseException.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-                    throw new ProductNotFoundException("Validate - Product with skuCode " + skuCode + " not found in inventory.", exception);
-                }
-
-                // Handle 400 response (Bad Request) and throw a custom exception
-                if (responseException.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
-                    throw new InsufficientStockException("Validate - Insufficient stock for product with skuCode " + skuCode + ". Deduction not possible.", exception);
-                }
-            }
-            // Handle other exceptions and throw a custom exception
-            throw new RuntimeException("Validate - Exception occurred while calling inventory service to deduct quantity for product with skuCode " + skuCode + ".", exception);
+            // If an exception is thrown, validation fails
+            return false;
         }
+    }
+
+    private void handleValidationException(Long skuCode, Exception exception) {
+        if (exception instanceof WebClientResponseException responseException) {
+            if (responseException.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                throw new ProductNotFoundException("Validate - Product with skuCode " + skuCode + " not found in inventory.", exception);
+            }
+
+            if (responseException.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
+                throw new InsufficientStockException("Validate - Insufficient stock for product with skuCode " + skuCode + ". Deduction not possible.", exception);
+            }
+        }
+
+        throw new RuntimeException("Validate - Exception occurred while calling inventory service to deduct quantity for product with skuCode " + skuCode + ".", exception);
     }
 
     private OrderLineItems mapToDto(OrderLineItemsDto orderLineItemsDto){
