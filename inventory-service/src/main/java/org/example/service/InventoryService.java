@@ -64,23 +64,39 @@ public class InventoryService {
     }
 
     public ProductResponseDTO updateProductByProductID(
-            Long productID ,
+            Long productID,
             ProductUpdateDTO productUpdateDTO) {
         Inventory existingProduct = inventoryRepository.findById(productID).orElseThrow(
                 () -> new IllegalArgumentException("Product not Found")
         );
-        existingProduct.setProductName(productUpdateDTO.getProductName());
-        existingProduct.setStockQuantity(productUpdateDTO.getStockQuantity());
-        existingProduct.setPrice(productUpdateDTO.getUnitPrice());
-        existingProduct.setDescription(productUpdateDTO.getDescription());
+
+        // Update only the non-null fields from ProductUpdateDTO
+        if (productUpdateDTO.getProductName() != null) {
+            existingProduct.setProductName(productUpdateDTO.getProductName());
+        }
+        if (productUpdateDTO.getStockQuantity() != null) {
+            existingProduct.setStockQuantity(productUpdateDTO.getStockQuantity());
+        }
+        if (productUpdateDTO.getUnitPrice() != null) {
+            existingProduct.setPrice(productUpdateDTO.getUnitPrice());
+        }
+        if (productUpdateDTO.getDescription() != null) {
+            existingProduct.setDescription(productUpdateDTO.getDescription());
+        }
+
         Inventory updatedInventory = inventoryRepository.save(existingProduct);
 
+        // Mapping to ProductResponseDTO
+        return mapInventoryToProductResponseDTO(updatedInventory);
+    }
+
+    private ProductResponseDTO mapInventoryToProductResponseDTO(Inventory inventory) {
         ProductResponseDTO productResponseDTO = new ProductResponseDTO();
-        productResponseDTO.setId(updatedInventory.getProductID());
-        productResponseDTO.setProductName(updatedInventory.getProductName());
-        productResponseDTO.setDescription(updatedInventory.getDescription());
-        productResponseDTO.setStockQuantity(updatedInventory.getStockQuantity());
-        productResponseDTO.setUnitPrice(updatedInventory.getPrice());
+        productResponseDTO.setId(inventory.getProductID());
+        productResponseDTO.setProductName(inventory.getProductName());
+        productResponseDTO.setDescription(inventory.getDescription());
+        productResponseDTO.setStockQuantity(inventory.getStockQuantity());
+        productResponseDTO.setUnitPrice(inventory.getPrice());
 
         return productResponseDTO;
     }

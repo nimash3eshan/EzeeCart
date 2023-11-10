@@ -88,7 +88,7 @@ public class InventoryController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteProductById(@RequestParam(name = "productID") Long productID) {
+    public ResponseEntity<String> deleteProductById(@RequestParam(name = "productid") Long productID) {
         try {
             log.info("Received delete request for product with ID: {}", productID);
             inventoryService.deleteProductById(productID);
