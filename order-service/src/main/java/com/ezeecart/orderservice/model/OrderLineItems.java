@@ -18,7 +18,7 @@ public class OrderLineItems {
     @Id// id for the oder
     @GeneratedValue(strategy = GenerationType.IDENTITY)//auto increment the primary key value
     private Long id;
-    private String skuCode;
+    private Long skuCode;
     private BigDecimal price;
     private Integer quantity;
 }

@@ -7,6 +7,7 @@ import com.ezeecart.orderservice.model.OrderLineItems;
 import com.ezeecart.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.UUID;
 import java.util.List;
@@ -16,11 +17,12 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;//inject the orderLineItems to repo
-
+    private final WebClient webClient;
 
     public void placeOrder(OrderRequest orderRequest){
         Order order=new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
+
 
         List<OrderLineItems> orderLineItems=orderRequest.getOrderLineItemsDtoList()
                 .stream()
@@ -28,9 +30,10 @@ public class OrderService {
                 .toList();
 
         order.setOrderLineItemsList(orderLineItems);
+
+        //todo: call inventory service and place order if products are available
+
         orderRepository.save(order);
-
-
     }
 
     private OrderLineItems mapToDto(OrderLineItemsDto orderLineItemsDto){
