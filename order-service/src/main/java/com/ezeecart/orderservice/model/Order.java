@@ -20,5 +20,5 @@ public class Order {
     private String orderNumber;
     @OneToMany(cascade = CascadeType.ALL)//join the table order and orderLineItems
     private List<OrderLineItems> orderLineItemsList;//each order contains list of orders
-
+    private String userId;
 }

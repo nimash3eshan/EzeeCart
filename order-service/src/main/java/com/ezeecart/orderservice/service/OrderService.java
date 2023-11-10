@@ -30,6 +30,7 @@ public class OrderService {
     public void placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
+        order.setUserId(orderRequest.getUserId());
 
         List<OrderLineItems> orderLineItems = orderRequest.getOrderLineItemsDtoList()
                 .stream()
