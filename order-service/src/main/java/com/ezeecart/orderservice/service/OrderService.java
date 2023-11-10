@@ -25,7 +25,7 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;//inject the orderLineItems to repo
-    private final WebClient webClient;
+    private final WebClient.Builder webClientBuilder; //inject the webclient to builder
 
     public void placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
@@ -78,8 +78,8 @@ public class OrderService {
     private String deductInventoryQuantity(Long skuCode, int quantity) {
         log.info("Deducting quantity for product with skuCode " + skuCode + " and quantity " + quantity + ".");
         try {
-            return webClient.put()
-                    .uri("http://localhost:8082/api/inventory/quan-deduction?productid=" + skuCode + "&quantityToDeduct=" + quantity)
+            return webClientBuilder.build().put()
+                    .uri("http://inventory-service/api/inventory/quan-deduction?productid=" + skuCode + "&quantityToDeduct=" + quantity)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
@@ -104,8 +104,8 @@ public class OrderService {
 
     private boolean validateProduct(Long skuCode, int quantity) {
         try {
-            webClient.post()
-                    .uri("http://localhost:8082/api/inventory/validate?productid=" + skuCode + "&quantityToDeduct=" + quantity)
+            webClientBuilder.build().post()
+                    .uri("http://inventory-service/api/inventory/validate?productid=" + skuCode + "&quantityToDeduct=" + quantity)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
