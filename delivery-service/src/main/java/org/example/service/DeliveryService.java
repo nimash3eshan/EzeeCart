@@ -30,6 +30,16 @@ public class DeliveryService {
         return deliveryRepository.save(delivery);
     }
 
+    // Inside DeliveryService
+    public List<Delivery> getDeliveriesByOrderId(Long orderId) {
+        return deliveryRepository.findByOrderId(orderId);
+    }
+
+    public List<Delivery> getDeliveriesByUserId(Long userId) {
+        return deliveryRepository.findByUserId(userId);
+    }
+
+
     public Delivery updateDelivery(Delivery newDelivery) {
         return deliveryRepository.save(newDelivery);
     }

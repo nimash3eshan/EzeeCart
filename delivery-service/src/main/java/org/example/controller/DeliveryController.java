@@ -29,6 +29,16 @@ public class DeliveryController {
         return deliveryService.getDeliveryById(deliveryId);
     }
 
+    @GetMapping("/byOrder")
+    public List<Delivery> getDeliveriesByOrderId(@RequestParam(name = "orderId") Long orderId) {
+        return deliveryService.getDeliveriesByOrderId(orderId);
+    }
+
+    @GetMapping("/byUser")
+    public List<Delivery> getDeliveriesByUserId(@RequestParam(name = "userId") Long userId) {
+        return deliveryService.getDeliveriesByUserId(userId);
+    }
+
     @PostMapping
     public Delivery createDelivery(@RequestBody Delivery delivery) {
         return deliveryService.createDelivery(delivery);
