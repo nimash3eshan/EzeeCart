@@ -129,4 +129,14 @@ public class InventoryService {
         inventory.setStockQuantity(inventory.getStockQuantity() - quantityToDeduct);
         inventoryRepository.save(inventory);
     }
+
+    @Transactional
+    public void validateProduct(Long productID, int quantityToDeduct) {
+        Inventory inventory = inventoryRepository.findById(productID).orElseThrow(
+                () -> new ProductNotFoundException("Product not found with productID : " + productID)
+        );
+        if (quantityToDeduct > inventory.getStockQuantity()) {
+            throw new InsufficientStockException("Insufficient stock for productID : " + productID);
+        }
+    }
 }

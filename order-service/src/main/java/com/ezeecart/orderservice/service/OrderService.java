@@ -8,6 +8,7 @@ import com.ezeecart.orderservice.model.Order;
 import com.ezeecart.orderservice.model.OrderLineItems;
 import com.ezeecart.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,6 +20,8 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+
+@Slf4j
 public class OrderService {
 
     private final OrderRepository orderRepository;//inject the orderLineItems to repo
@@ -43,6 +46,7 @@ public class OrderService {
 
         // For each order line item, call the inventory service to deduct the quantity
         for (OrderLineItems orderLineItem : orderLineItems) {
+            validateProduct(orderLineItem.getSkuCode(), orderLineItem.getQuantity());
             String result = deductInventoryQuantity(orderLineItem.getSkuCode(), orderLineItem.getQuantity());
             results.add(result);
         }
@@ -61,6 +65,7 @@ public class OrderService {
     }
 
     private String deductInventoryQuantity(Long skuCode, int quantity) {
+        log.info("Deducting quantity for product with skuCode " + skuCode + " and quantity " + quantity + ".");
         try {
             return webClient.put()
                     .uri("http://localhost:8082/api/inventory/quan-deduction?productid=" + skuCode + "&quantityToDeduct=" + quantity)
@@ -83,6 +88,31 @@ public class OrderService {
 
             // Handle other exceptions and throw a custom exception
             throw new RuntimeException("Exception occurred while calling inventory service to deduct quantity for product with skuCode " + skuCode + ".", exception);
+        }
+    }
+
+    private void validateProduct(Long skuCode, int quantity) {
+        try {
+            webClient.post()
+                    .uri("http://localhost:8082/api/inventory/validate?productid=" + skuCode + "&quantityToDeduct=" + quantity)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (Exception exception) {
+            if (exception instanceof WebClientResponseException responseException) {
+
+                // Handle 404 response (Not Found) and throw a custom exception
+                if (responseException.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                    throw new ProductNotFoundException("Validate - Product with skuCode " + skuCode + " not found in inventory.", exception);
+                }
+
+                // Handle 400 response (Bad Request) and throw a custom exception
+                if (responseException.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
+                    throw new InsufficientStockException("Validate - Insufficient stock for product with skuCode " + skuCode + ". Deduction not possible.", exception);
+                }
+            }
+            // Handle other exceptions and throw a custom exception
+            throw new RuntimeException("Validate - Exception occurred while calling inventory service to deduct quantity for product with skuCode " + skuCode + ".", exception);
         }
     }
 

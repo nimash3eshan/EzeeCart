@@ -62,6 +62,25 @@ public class InventoryController {
         }
     }
 
+    @PostMapping("/validate")
+    public ResponseEntity<String> validateProduct(
+            @RequestParam(name = "productid") Long productID,
+            @RequestParam(name = "quantityToDeduct") int quantityToDeduct) {
+        try {
+            inventoryService.validateProduct(productID, quantityToDeduct);
+            return ResponseEntity.ok("Product validation successful.");
+        } catch (ProductNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
+        } catch (InsufficientStockException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient stock. Validation failed.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid quantity. Validation failed.");
+        } catch (Exception e) {
+            log.error("Internal server error occurred during product validation", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error occurred.");
+        }
+    }
+
     @DeleteMapping("/{productName}")
     @ResponseStatus(HttpStatus.OK)
     public String deleteProductByName(@PathVariable String productName){
