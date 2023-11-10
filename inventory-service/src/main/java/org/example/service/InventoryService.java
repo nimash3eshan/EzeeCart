@@ -30,61 +30,6 @@ public class InventoryService {
         return newProd;
     }
 
-    public ProductResponseDTO getProductDetailsByName(String productName) {
-        Inventory inventory = inventoryRepository.findInventoryByProductName(productName);
-        if(inventory == null){
-            throw new IllegalArgumentException("Product not Found");
-        }
-
-        ProductResponseDTO productResponse = new ProductResponseDTO();
-        productResponse.setId(inventory.getProductID());
-        productResponse.setProductName(inventory.getProductName());
-        productResponse.setDescription(inventory.getDescription());
-        productResponse.setUnitPrice(inventory.getPrice());
-        productResponse.setStockQuantity(inventory.getStockQuantity());
-
-        return  productResponse;
-    }
-
-    public ProductResponseDTO updateProductByProductID(
-            Long productID ,
-            ProductUpdateDTO productUpdateDTO) {
-        Inventory existingProduct = inventoryRepository.findById(productID).orElseThrow(
-                () -> new IllegalArgumentException("Product not Found")
-        );
-        existingProduct.setProductName(productUpdateDTO.getProductName());
-        existingProduct.setStockQuantity(productUpdateDTO.getStockQuantity());
-        existingProduct.setPrice(productUpdateDTO.getUnitPrice());
-        existingProduct.setDescription(productUpdateDTO.getDescription());
-        Inventory updatedInventory = inventoryRepository.save(existingProduct);
-
-        ProductResponseDTO productResponseDTO = new ProductResponseDTO();
-        productResponseDTO.setId(updatedInventory.getProductID());
-        productResponseDTO.setProductName(updatedInventory.getProductName());
-        productResponseDTO.setDescription(updatedInventory.getDescription());
-        productResponseDTO.setStockQuantity(updatedInventory.getStockQuantity());
-        productResponseDTO.setUnitPrice(updatedInventory.getPrice());
-
-        return productResponseDTO;
-    }
-
-    public String deleteProductByName(String productName) {
-        Inventory existingProduct = inventoryRepository.findInventoryByProductName(productName);
-        if(existingProduct == null){
-            throw new IllegalArgumentException("Product not Found");
-        }
-        inventoryRepository.delete(existingProduct);
-        return "Product deleted successfully";
-    }
-
-    @Transactional
-    public void deleteProductById(Long productId) {
-        log.info("Deleting product with ID: {}", productId);
-        inventoryRepository.deleteByProductID(productId);
-        log.info("Product with ID {} deleted successfully", productId);
-    }
-
-
     public List<ProductResponseDTO> getAllProducts() {
         List<Inventory> products = inventoryRepository.findAll();
 
@@ -118,6 +63,28 @@ public class InventoryService {
         return productResponseDTO;
     }
 
+    public ProductResponseDTO updateProductByProductID(
+            Long productID ,
+            ProductUpdateDTO productUpdateDTO) {
+        Inventory existingProduct = inventoryRepository.findById(productID).orElseThrow(
+                () -> new IllegalArgumentException("Product not Found")
+        );
+        existingProduct.setProductName(productUpdateDTO.getProductName());
+        existingProduct.setStockQuantity(productUpdateDTO.getStockQuantity());
+        existingProduct.setPrice(productUpdateDTO.getUnitPrice());
+        existingProduct.setDescription(productUpdateDTO.getDescription());
+        Inventory updatedInventory = inventoryRepository.save(existingProduct);
+
+        ProductResponseDTO productResponseDTO = new ProductResponseDTO();
+        productResponseDTO.setId(updatedInventory.getProductID());
+        productResponseDTO.setProductName(updatedInventory.getProductName());
+        productResponseDTO.setDescription(updatedInventory.getDescription());
+        productResponseDTO.setStockQuantity(updatedInventory.getStockQuantity());
+        productResponseDTO.setUnitPrice(updatedInventory.getPrice());
+
+        return productResponseDTO;
+    }
+
     @Transactional
     public void deductProductQuantity(Long productID, int quantityToDeduct) {
         Inventory inventory = inventoryRepository.findById(productID).orElseThrow(
@@ -129,6 +96,23 @@ public class InventoryService {
         inventory.setStockQuantity(inventory.getStockQuantity() - quantityToDeduct);
         inventoryRepository.save(inventory);
     }
+
+    public String deleteProductByName(String productName) {
+        Inventory existingProduct = inventoryRepository.findInventoryByProductName(productName);
+        if(existingProduct == null){
+            throw new IllegalArgumentException("Product not Found");
+        }
+        inventoryRepository.delete(existingProduct);
+        return "Product deleted successfully";
+    }
+
+    @Transactional
+    public void deleteProductById(Long productId) {
+        log.info("Deleting product with ID: {}", productId);
+        inventoryRepository.deleteByProductID(productId);
+        log.info("Product with ID {} deleted successfully", productId);
+    }
+
 
     @Transactional
     public void validateProduct(Long productID, int quantityToDeduct) {
