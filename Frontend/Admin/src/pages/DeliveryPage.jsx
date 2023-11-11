@@ -2,10 +2,23 @@
 import React, { useState } from "react";
 import DeliveryList from "../components/DeliveryList";
 import DeliveryForm from "../components/DeliveryForm";
+import axios from "axios";
 
 const DeliveryPage = () => {
   const [editDeliveryId, setEditDeliveryId] = useState(null);
   const [updateTrigger, setUpdateTrigger] = useState(0); // Update trigger
+
+  const handleEditStatus = async (deliveryId, isDelivered) => {
+    try {
+      await axios.put(
+        `http://localhost:8083/api/deliveries?deliveryId=${deliveryId}`,
+        { isDelivered }
+      );
+      setUpdateTrigger((prev) => prev + 1);
+    } catch (error) {
+      console.error("Error updating delivery status:", error);
+    }
+  };
 
   const handleEdit = (deliveryId) => {
     setEditDeliveryId(deliveryId);
@@ -21,16 +34,34 @@ const DeliveryPage = () => {
     setEditDeliveryId(null);
   };
 
-  const handleDelete = (deliveryId) => {
-    // Implement the delete functionality
-    // Use the provided delete API endpoint
+  const handleDelete = async (deliveryId) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/deliveries?deliveryId=${deliveryId}`);
+      setUpdateTrigger((prev) => prev + 1);
+    } catch (error) {
+      console.error("Error deleting delivery:", error);
+    }
   };
 
   return (
-    <div className="p-4">
-      <div className="flex space-x-4">
-        <DeliveryList onEdit={handleEdit} onDelete={handleDelete} onUpdate={updateTrigger} />
-        <DeliveryForm onSave={handleSave} onCancel={handleCancel} deliveryId={editDeliveryId} />
+    <div className="flex p-4 space-x-4">
+      <div className="flex-2">
+      <DeliveryList
+        onEditStatus={handleEditStatus}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onUpdate={() => setUpdateTrigger((prev) => prev + 1)}
+      />
+      </div>
+      <div className="flex-1">
+
+      <DeliveryForm
+        onSave={handleSave}
+        onCancel={handleCancel}
+        deliveryId={editDeliveryId}
+        onUpdate={() => setUpdateTrigger((prev) => prev + 1)}
+
+      />
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import AdminLogin from "./pages/AdminLogin";
 import Inventory from "./pages/Inventory";
 import InventoryPage from "./pages/InventoryPage";
 import DeliveryPage from "./pages/DeliveryPage";
+import OrderPage from "./pages/OrderPage";
 
 
 const App = () => {
@@ -73,7 +74,7 @@ const App = () => {
                 <Route path="/ecommerce" element={<Ecommerce />} />
 
                 {/* pages  */}
-                <Route path="/orders" element={<Orders />} />
+                <Route path="/orders" element={<OrderPage />} />
                 <Route path="/employees" element={<Employees />} />
                 <Route path="/customers" element={<Customers />} />
                 <Route path="/inventory" element={<InventoryPage />} />
