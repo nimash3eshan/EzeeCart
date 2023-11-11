@@ -21,6 +21,8 @@ public class Delivery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long deliveryId;
+    private Long userId;
+    private Long orderId;
     private String deliveryAddress;
     private LocalDateTime dateTime;
     private Boolean isDelivered;

@@ -41,6 +41,15 @@ public class DeliveryController {
         return deliveryService.updateDelivery(newDelivery);
     }
 
+    @GetMapping("/byOrder")
+    public List<Delivery> getDeliveriesByOrderId(@RequestParam(name = "orderId") Long orderId) {
+        return deliveryService.getDeliveriesByOrderId(orderId);
+    }
+
+    @GetMapping("/byUser")
+    public List<Delivery> getDeliveriesByUserId(@RequestParam(name = "userId") Long userId) {
+        return deliveryService.getDeliveriesByUserId(userId);
+    }
 
     @DeleteMapping
     public void deleteDelivery(@RequestParam(name = "deliveryId") Long deliveryId) {
