@@ -54,9 +54,8 @@ Spring Data JPA: For interacting with the database.-->
 1. **Prerequisites:** Ensure you have Java 8 or later installed.
 
 2. **Clone the Repository:**
-```bash
 git clone https://github.com/nimash3eshan/EzeeCart-Backend.git
-cd EzeeCart-Backend```
+cd EzeeCart-Backend
 
 4. **Build and Run Microservices:**
 
