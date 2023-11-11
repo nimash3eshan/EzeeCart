@@ -17,11 +17,11 @@ const Profile = () => {
 
       const getUserDetails = async () => {
         try {
-          const tokenVerification = await axios.get(`http://localhost:8080/api/users/validateToken/${token}`);
+          const tokenVerification = await axios.get(`http://localhost:8084/api/users/validateToken/${token}`);
 
           if (tokenVerification.data.Token === 'valid') {
             const userId = tokenVerification.data.UserId;
-            const userDetails = await axios.get(`http://localhost:8080/api/users/${userId}`);
+            const userDetails = await axios.get(`http://localhost:8084/api/users/${userId}`);
             setUser(userDetails.data);
           }
         } catch (error) {

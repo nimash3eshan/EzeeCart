@@ -15,7 +15,7 @@ const Signup = () => {
 
   const handleSignup = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/users', {
+      const response = await axios.post('http://localhost:8084/api/users', {
         username,
         email,
         password,
@@ -27,6 +27,7 @@ const Signup = () => {
       if (response.status === 200) {
         // Perform actions based on successful signup
         // For example, navigate to the login page or any other action
+        console.log(response.data)
         navigate('/login');
       }
     } catch (error) {
