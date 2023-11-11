@@ -82,10 +82,5 @@ If you want to develop a frontend, you can connect it to the microservices using
 - Integrate payment gateway for online transactions.
 - Implement caching and load balancing for improved performance.
 
-## Contributors
-- Nimash 
-- Krishantha 
-- Chinthana  
-- Janith
-- Devin
-- Shenal
+
+
