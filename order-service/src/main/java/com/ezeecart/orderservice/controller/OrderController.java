@@ -34,22 +34,27 @@ public class OrderController {
     }
 
 
-    @GetMapping("/all")
+    @GetMapping("/")
     public ResponseEntity<List<Order>> getAllOrders() {
         List<Order> orders = orderService.getAllOrders();
         return ResponseEntity.ok(orders);
     }
 
-    @GetMapping("/{orderId}")
-    public ResponseEntity<Order> getOrderById(@PathVariable Long orderId) {
-        Optional<Order> order = orderService.getOrderById(orderId);
-        return order.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping
+    public ResponseEntity<?> getOrderById(@RequestParam(required = false) Long orderId,
+                                          @RequestParam(required = false) String userId) {
+        if (orderId != null) {
+            Optional<Order> order = orderService.getOrderById(orderId);
+            return order.map(ResponseEntity::ok)
+                    .orElseGet(() -> ResponseEntity.notFound().build());
+        } else if (userId != null) {
+            List<Order> orders = orderService.getOrdersByUserId(userId);
+            return ResponseEntity.ok(orders);
+        } else {
+            // Handle invalid request with neither orderId nor userId
+            return ResponseEntity.badRequest().body("Invalid request. Provide either orderId or userId.");
+        }
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable String userId) {
-        List<Order> orders = orderService.getOrdersByUserId(userId);
-        return ResponseEntity.ok(orders);
-    }
+
 }
