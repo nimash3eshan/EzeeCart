@@ -53,6 +53,14 @@ public class JwtTokenProvider {
         String role = (String) claims.get("role");
         return UserRole.valueOf(role); // Convert the role string to UserRole enum
     }
+    public String getUserIdFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody();
+        String UserId = (String) claims.get("id");
+        return String.valueOf(UserId); // Convert the role string to UserRole enum
+    }
 
     public boolean validateToken(String token) {
         try {

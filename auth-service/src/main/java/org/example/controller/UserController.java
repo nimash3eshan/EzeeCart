@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -55,12 +57,21 @@ public class UserController {
     }
 
     @GetMapping("/validateToken/{token}")
-    public ResponseEntity<String> validateTokenAndGetEmail(@PathVariable String token) {
+    public ResponseEntity<?> validateTokenAndGetEmail(@PathVariable String token) {
         boolean isValid = jwtTokenProvider.validateToken(token);
         if (isValid) {
             String email = jwtTokenProvider.getEmailFromToken(token);
-            UserRole role= jwtTokenProvider.getUserRoleFromToken(token);
-            return ResponseEntity.ok("Valid Token. Email: " + email +"|"+ "Role: "+role);
+            UserRole role = jwtTokenProvider.getUserRoleFromToken(token);
+            String userId = jwtTokenProvider.getUserIdFromToken(token);
+
+            // Create a Map or a custom class to include multiple values
+            Map<String, Object> response = new HashMap<>();
+            response.put("Token", "valid");
+            response.put("Email", email);
+            response.put("Role", role);
+            response.put("UserId", userId);
+
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
         }
