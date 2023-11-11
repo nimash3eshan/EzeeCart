@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Application.properties.file ###
+delivery-service/src/main/resources/application.properties
+auth-service/src/main/resources/application.properties
+inventory-service/src/main/resources/application.properties
+order-service/src/main/resources/application.properties
+
+
