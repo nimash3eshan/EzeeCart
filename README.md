@@ -83,9 +83,9 @@ Integrate payment gateway for online transactions.
 Implement caching and load balancing for improved performance.
 
 ## Contributors
-Nimash 
-Krishantha 
-Chinthana  
-Janith
-Devin
-Shenal
+- Nimash 
+- Krishantha 
+- Chinthana  
+- Janith
+- Devin
+- Shenal
