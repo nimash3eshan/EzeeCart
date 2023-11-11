@@ -68,19 +68,19 @@ cd auth-service
 ## Access Services:
 
 Microservices will be accessible at the following ports:
-Authentication Service: http://localhost:8084
-Inventory Service 1: http://localhost:8082
-Inventory Service 2: http://localhost:8086
-Order Service: http://localhost:8081
-Delivery Service: http://localhost:8083
+- Authentication Service: http://localhost:8084
+- Inventory Service 1: http://localhost:8082
+- Inventory Service 2: http://localhost:8086
+- Order Service: http://localhost:8081
+- Delivery Service: http://localhost:8083
 
 **Optional: Frontend Development:**
 If you want to develop a frontend, you can connect it to the microservices using the provided RESTful APIs.
 
 ## Future Enhancements
-Implement frontend for a complete end-to-end shopping experience.
-Integrate payment gateway for online transactions.
-Implement caching and load balancing for improved performance.
+- Implement frontend for a complete end-to-end shopping experience.
+- Integrate payment gateway for online transactions.
+- Implement caching and load balancing for improved performance.
 
 ## Contributors
 - Nimash 
