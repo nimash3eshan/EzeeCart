@@ -1,7 +1,11 @@
 # EzeeCart-Backend
+[![](https://img.shields.io/badge/Click_Here-Project%20Presentation-red)](https://www.canva.com/design/DAFufKNVjh0/ZDtYw-9N3Hpl39iHRr8BRQ/view)
 
 ## Overview
 This project is a microservices-based system designed for a supermarket using Spring Boot. The system is aimed at providing a seamless shopping experience for customers while efficiently managing inventory and order fulfillment. The architecture is designed to be scalable, modular, and resilient.
+
+## Microservices Architecture
+![alt text](https://i.ibb.co/2ZDn6xS/Whats-App-Image-2023-11-10-at-23-12-52-44075bbc.jpg)
 
 ## Features
 **Customer Management:**
@@ -73,6 +77,9 @@ Microservices will be accessible at the following ports:
 - Inventory Service 2: http://localhost:8086
 - Order Service: http://localhost:8081
 - Delivery Service: http://localhost:8083
+- Image Service: http://localhost:8085
+- Discovery Service: http://localhost:8761
+- API-Gateway Service: http://localhost:8080
 
 **Optional: Frontend Development:**
 If you want to develop a frontend, you can connect it to the microservices using the provided RESTful APIs.
