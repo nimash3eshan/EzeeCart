@@ -1,6 +1,8 @@
 # EzeeCart-Backend
 [![](https://img.shields.io/badge/Click_Here-Project%20Presentation-red)](https://www.canva.com/design/DAFufKNVjh0/ZDtYw-9N3Hpl39iHRr8BRQ/view)
 
+[<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://app.getpostman.com/run-collection/26810269-7f8ae587-cd22-4e93-8001-c89838d42890?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D26810269-7f8ae587-cd22-4e93-8001-c89838d42890%26entityType%3Dcollection%26workspaceId%3Db63dbe9f-2029-46a5-8e99-206c0e98ea95)
+
 ## Overview
 This project is a microservices-based system designed for a supermarket using Spring Boot. The system is aimed at providing a seamless shopping experience for customers while efficiently managing inventory and order fulfillment. The architecture is designed to be scalable, modular, and resilient.
 
